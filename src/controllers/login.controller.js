@@ -1,7 +1,7 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import HttpError from "../../utils/HttpError.js";
+import HttpError from "../utils/HttpError.js";
 import { dbQuery } from "../middlewares/error.middleware.js";
 
 const loginController = dbQuery(async (req, res) => {

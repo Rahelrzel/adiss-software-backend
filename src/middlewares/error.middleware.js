@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import HttpError from "../../utils/HttpError.js";
+import HttpError from "../utils/HttpError.js";
 
 export const errorMiddleware = (error, req, res, _next) => {
   if (error instanceof HttpError) {

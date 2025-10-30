@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import express from "express";
-import { env } from "../config/env.config.js";
+import { env } from "./config/env.config.js";
 import cors from "cors";
 
 import testRoute from "./routes/test.js";
@@ -15,7 +15,7 @@ import playlistRoutes from "./routes/playlist.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import connectDB from "../config/db.config.js";
+import connectDB from "./config/db.config.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);

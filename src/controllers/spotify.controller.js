@@ -1,7 +1,7 @@
 // controllers/spotifyController.js
 import axios from "axios";
 import { dbQuery } from "../middlewares/error.middleware.js";
-import HttpError from "../../utils/HttpError.js";
+import HttpError from "../utils/HttpError.js";
 
 export const searchTracks = dbQuery(async (req, res) => {
   const { query } = req.query;

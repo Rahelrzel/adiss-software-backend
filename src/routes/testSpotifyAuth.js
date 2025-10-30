@@ -1,5 +1,5 @@
 import express from "express";
-import { getSpotifyToken } from "../../utils/spotifyAuth.js";
+import { getSpotifyToken } from "../utils/spotifyAuth.js";
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
-import HttpError from "../../utils/HttpError.js";
+import HttpError from "../utils/HttpError.js";
 import { dbQuery } from "../middlewares/error.middleware.js";
 
 export const registerController = dbQuery(async (req, res) => {

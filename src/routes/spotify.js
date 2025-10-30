@@ -1,7 +1,7 @@
 // routes/spotifyRoutes.js
 import express from "express";
 import { searchTracks } from "../controllers/spotify.controller.js";
-import { getSpotifyToken } from "../../utils/spotifyAuth.js";
+import { getSpotifyToken } from "../utils/spotifyAuth.js";
 
 const router = express.Router();
 

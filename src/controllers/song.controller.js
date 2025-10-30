@@ -1,6 +1,6 @@
 import Song from "../models/song.js";
 import Playlist from "../models/playlist.js";
-import HttpError from "../../utils/HttpError.js";
+import HttpError from "../utils/HttpError.js";
 import { dbQuery } from "../middlewares/error.middleware.js";
 
 // CREATE SONG
