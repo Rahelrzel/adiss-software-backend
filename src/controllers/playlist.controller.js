@@ -3,19 +3,29 @@ import Song from "../models/song.js";
 import { dbQuery } from "../middlewares/error.middleware.js";
 import HttpError from "../utils/HttpError.js";
 
-// CREATE PLAYLIST
 export const createPlaylist = dbQuery(async (req, res) => {
-  const playlist = new Playlist({ ...req.body, userId: req.user.id });
+  const { name, description, songs, isPublished = false } = req.body;
+
+  const playlist = new Playlist({
+    name,
+    description,
+    songs,
+    isPublished,
+    userId: req.user.id,
+  });
+
   await playlist.save();
   res.status(201).json(playlist);
 });
 
-// GET ALL PLAYLISTS
 export const getPlaylists = dbQuery(async (req, res) => {
   const query = {};
+
   if (req.query.name) query.name = { $regex: req.query.name, $options: "i" };
   if (req.query.description)
     query.description = { $regex: req.query.description, $options: "i" };
+  if (req.query.isPublished !== undefined)
+    query.isPublished = req.query.isPublished === "true";
 
   const playlists = await Playlist.find(query)
     .populate("songs", "title artist album genre")
@@ -24,7 +34,6 @@ export const getPlaylists = dbQuery(async (req, res) => {
   res.status(200).json(playlists);
 });
 
-// GET SINGLE PLAYLIST
 export const getPlaylistById = dbQuery(async (req, res) => {
   const playlist = await Playlist.findById(req.params.id)
     .populate("songs", "title artist album genre")
@@ -36,11 +45,26 @@ export const getPlaylistById = dbQuery(async (req, res) => {
   res.status(200).json(playlist);
 });
 
-// UPDATE PLAYLIST
 export const updatePlaylist = dbQuery(async (req, res) => {
-  const playlist = await Playlist.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
+  const { name, description, songs, isPublished } = req.body;
+
+  const updatedFields = {
+    ...(name && { name }),
+    ...(description && { description }),
+    ...(songs && { songs }),
+  };
+
+  if (typeof isPublished === "boolean") {
+    updatedFields.isPublished = isPublished;
+  }
+
+  const playlist = await Playlist.findByIdAndUpdate(
+    req.params.id,
+    updatedFields,
+    {
+      new: true,
+    }
+  );
 
   if (!playlist)
     throw new HttpError({ status: 404, message: "Playlist not found" });
@@ -48,13 +72,11 @@ export const updatePlaylist = dbQuery(async (req, res) => {
   res.status(200).json(playlist);
 });
 
-// DELETE PLAYLIST
 export const deletePlaylist = dbQuery(async (req, res) => {
   const playlist = await Playlist.findByIdAndDelete(req.params.id);
   if (!playlist)
     throw new HttpError({ status: 404, message: "Playlist not found" });
 
-  // Remove playlist reference from songs
   await Song.updateMany(
     { playlistId: playlist._id },
     { $unset: { playlistId: "" } }
@@ -63,9 +85,11 @@ export const deletePlaylist = dbQuery(async (req, res) => {
   res.status(200).json({ message: "Playlist deleted successfully" });
 });
 
-// PLAYLIST STATISTICS
 export const getPlaylistStats = dbQuery(async (_req, res) => {
   const totalPlaylists = await Playlist.countDocuments();
+  const publishedPlaylists = await Playlist.countDocuments({
+    isPublished: true,
+  });
 
   const playlistsWithMostSongs = await Playlist.aggregate([
     { $project: { name: 1, songsCount: { $size: "$songs" } } },
@@ -73,10 +97,13 @@ export const getPlaylistStats = dbQuery(async (_req, res) => {
     { $limit: 5 },
   ]);
 
-  res.status(200).json({ totalPlaylists, playlistsWithMostSongs });
+  res.status(200).json({
+    totalPlaylists,
+    publishedPlaylists,
+    playlistsWithMostSongs,
+  });
 });
 
-// ADD SONG TO PLAYLIST
 export const addSongToPlaylist = dbQuery(async (req, res) => {
   const { playlistId, songId } = req.body;
 
@@ -104,7 +131,6 @@ export const addSongToPlaylist = dbQuery(async (req, res) => {
   res.status(200).json(updatedPlaylist);
 });
 
-// REMOVE SONG FROM PLAYLIST
 export const removeSongFromPlaylist = dbQuery(async (req, res) => {
   const { playlistId, songId } = req.body;
 

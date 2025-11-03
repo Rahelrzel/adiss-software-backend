@@ -5,7 +5,7 @@ const playlistSchema = new mongoose.Schema({
   description: { type: String },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // reference to User model
+    ref: "User",
     required: true,
   },
   songs: [
@@ -14,7 +14,8 @@ const playlistSchema = new mongoose.Schema({
       ref: "Song",
     },
   ],
-  createdAt: { type: Date, default: Date.now },
+  isPublished: { type: Boolean, default: false },
+  timestamp: { type: Date, default: Date.now },
 });
 
 export default mongoose.model("Playlist", playlistSchema);
