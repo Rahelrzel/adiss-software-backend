@@ -17,16 +17,18 @@ export const searchTracks = dbQuery(async (req, res) => {
     params: { q: query, type: "track", limit: 10 },
   });
 
-  const simplifiedTracks = response.data.tracks.items.map((track) => ({
-    id: track.id,
-    name: track.name,
-    artist: track.artists[0]?.name,
-    album: track.album.name,
-    preview_url: track.preview_url,
-    image: track.album.images[0]?.url,
-    external_url: track.external_urls.spotify,
-    genre: track.album.genres ? track.album.genres[0] : "Unknown",
-  }));
+  // console.log(response.data.tracks.items);
 
-  res.json({ success: true, data: simplifiedTracks });
+  // const simplifiedTracks = response.data.tracks.items.map((track) => ({
+  //   id: track.id,
+  //   name: track.name,
+  //   artist: track.artists[0]?.name,
+  //   album: track.album.name,
+  //   preview_url: track.preview_url,
+  //   image: track.album.images[0]?.url,
+  //   external_url: track.external_urls.spotify,
+  //   genre: track.album.genres ? track.album.genres[0] : "Unknown",
+  // }));
+
+  res.json({ success: true, data: response.data });
 });
