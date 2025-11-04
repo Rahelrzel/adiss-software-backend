@@ -2,7 +2,6 @@ import express from "express";
 import {
   createPlaylist,
   getPlaylists,
-  getPlaylistById,
   updatePlaylist,
   deletePlaylist,
   getPlaylistStats,
@@ -25,7 +24,7 @@ router.use(authenticateUser);
 router.post("/", validateBody(createPlaylistSchema), createPlaylist);
 router.get("/", getPlaylists);
 router.get("/stats", getPlaylistStats);
-router.get("/:id", getPlaylistById);
+
 router.put("/:id", validateBody(updatePlaylistSchema), updatePlaylist);
 router.delete("/:id", deletePlaylist);
 
