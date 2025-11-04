@@ -34,6 +34,20 @@ export const getPlaylists = dbQuery(async (req, res) => {
   res.status(200).json(playlists);
 });
 
+export const getPlaylistById = dbQuery(async (req, res) => {
+  const { id } = req.params;
+
+  const playlist = await Playlist.findById(id)
+    .populate("songs", "title artist album genre")
+    .populate("userId", "username email");
+
+  if (!playlist) {
+    return res.status(404).json({ message: "Playlist not found" });
+  }
+
+  res.status(200).json(playlist);
+});
+
 export const updatePlaylist = dbQuery(async (req, res) => {
   const { name, description, songs, isPublished } = req.body;
 
