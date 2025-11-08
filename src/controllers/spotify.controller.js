@@ -12,23 +12,26 @@ export const searchTracks = dbQuery(async (req, res) => {
 
   const token = await getSpotifyToken();
 
+  // ✅ Request only 10 tracks
   const response = await axios.get("https://api.spotify.com/v1/search", {
     headers: { Authorization: `Bearer ${token}` },
     params: { q: query, type: "track", limit: 10 },
   });
 
-  console.log(response.data.tracks.items);
-
+  // ✅ Simplify the data
   const simplifiedTracks = response.data.tracks.items.map((track) => ({
     id: track.id,
-    name: track.name,
-    artist: track.artists[0]?.name,
-    album: track.album.name,
-    preview_url: track.preview_url,
-    image: track.album.images[0]?.url,
-    external_url: track.external_urls.spotify,
-    genre: track.album.genres ? track.album.genres[0] : "Unknown",
+    title: track.name,
+    artist: track.artists?.[0]?.name || "Unknown Artist",
+    album: track.album?.name || "Unknown Album",
+    image: track.album?.images?.[0]?.url || null,
+    spotifyUrl: track.external_urls?.spotify || null,
+    previewUrl: track.preview_url || null,
   }));
 
-  res.json({ success: true, data: simplifiedTracks });
+  res.json({
+    success: true,
+    count: simplifiedTracks.length,
+    data: simplifiedTracks,
+  });
 });

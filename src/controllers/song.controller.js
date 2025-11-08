@@ -15,7 +15,6 @@ export const createSong = dbQuery(async (req, res) => {
     playlistId,
   } = req.body;
 
-  // ✅ Create and save song directly (already validated by Zod middleware)
   const song = new Song({
     title,
     artistId,
