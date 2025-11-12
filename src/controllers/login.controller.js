@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import HttpError from "../utils/HttpError.js";
 import { dbQuery } from "../middlewares/error.middleware.js";
+import { env } from "../config/env.config.js";
 
 const loginController = dbQuery(async (req, res) => {
   const { email, password } = req.body;
@@ -15,8 +16,8 @@ const loginController = dbQuery(async (req, res) => {
   if (!valid)
     throw new HttpError({ status: 400, message: "Invalid email or password" });
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+  const token = jwt.sign({ id: user._id }, env.JWT_SECRET, {
+    expiresIn: env.JWT_EXPIRES_IN,
   });
 
   res.status(200).json({

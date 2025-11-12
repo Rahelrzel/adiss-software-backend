@@ -26,7 +26,7 @@ export const getSongsByGenre = dbQuery(async (_req, res) => {
 
   const data = await Promise.all(
     genres.map(async (genre) => {
-      const count = await Song.countDocuments({ genres: genre._id });
+      const count = await Song.countDocuments({ genre: genre._id });
       return {
         genre: genre.name,
         songCount: count,
